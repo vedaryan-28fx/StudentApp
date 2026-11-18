@@ -1,0 +1,10 @@
+services:
+  database: # This is the service name used for internal Docker networking
+    container_name: StudentApp_Container # This forces the exact name you see in Docker Desktop
+    image: 'postgres:latest'
+    environment:
+      - 'POSTGRES_USER=student'
+      - 'POSTGRES_PASSWORD=pass'
+      - 'POSTGRES_DB=projectdb'
+    ports:
+      - '5432:5432'
