@@ -5,6 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ved.StudentApp.student.entity.Student;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -12,7 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 
 @Entity
-@Table(name = "students")
+@Table(name = "courses")
 public class Course {
 
     @Id
@@ -22,4 +26,7 @@ public class Course {
     private String name;
 
     private String description;
+
+    @ManyToMany(mappedBy = "courses", fetch = FetchType.LAZY)
+    private Set<Student> students = new HashSet<>();
 }
