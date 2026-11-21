@@ -5,8 +5,11 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import ved.StudentApp.Repository.CourseRepository;
+import ved.StudentApp.Repository.StudentRepository;
 import ved.StudentApp.dto.course.CourseDto;
+import ved.StudentApp.dto.course.CourseResponseDto;
 import ved.StudentApp.entity.Course;
+import ved.StudentApp.entity.Student;
 import ved.StudentApp.exception.ResourceNotFoundException;
 
 import java.util.ArrayList;
@@ -17,6 +20,7 @@ import java.util.List;
 public class CourseServices {
 
     private final CourseRepository courseRepository;
+    private final StudentRepository studentRepository;
     private final ModelMapper modelMapper;
 
     public CourseDto getCourseById(Long id) {
@@ -52,5 +56,29 @@ public class CourseServices {
 
     public void deleteCourse(Long id) {
         courseRepository.deleteById(id);
+    }
+
+    @Transactional
+    public CourseResponseDto enrollInCourse(Long studentId, Long courseID) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(()-> new ResourceNotFoundException("Student not found with id: " + studentId));
+        Course course = courseRepository.findById(courseID)
+                .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + courseID));
+
+        student.addCourse(course);
+//        Course savedCourse = courseRepository.save(course);
+        return modelMapper.map(course, CourseResponseDto.class);
+    }
+
+
+    @Transactional
+    public CourseResponseDto withdrawFromCourse(Long studentId, Long courseID) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(()-> new ResourceNotFoundException("Student not found with id: " + studentId));
+        Course course = courseRepository.findById(courseID)
+                .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + courseID));
+
+        student.dropCourse(course);
+        return modelMapper.map(course, CourseResponseDto.class);
     }
 }
