@@ -4,13 +4,14 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import ved.StudentApp.Repository.CourseRepository;
-import ved.StudentApp.Repository.StudentRepository;
+import ved.StudentApp.repository.CourseRepository;
+import ved.StudentApp.repository.StudentRepository;
 import ved.StudentApp.dto.course.CourseDto;
 import ved.StudentApp.dto.course.CourseResponseDto;
 import ved.StudentApp.entity.Course;
 import ved.StudentApp.entity.Student;
 import ved.StudentApp.exception.ResourceNotFoundException;
+import ved.StudentApp.notifications.policy.EnrollmentNotificationPolicy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,10 @@ public class CourseServices {
     private final CourseRepository courseRepository;
     private final StudentRepository studentRepository;
     private final ModelMapper modelMapper;
+    private final EnrollmentNotificationPolicy notificationPolicy;
+    private final AdminEnrollmentService adminEnrollmentService;
+
+
 
     public CourseDto getCourseById(Long id) {
         Course course = courseRepository.findById(id)
@@ -67,9 +72,11 @@ public class CourseServices {
 
         student.addCourse(course);
 //        Course savedCourse = courseRepository.save(course);
+        notificationPolicy.notifyEnrollment(
+                student.getId(), student.getName(), student.getEmail(), course.getName()
+        );
         return modelMapper.map(course, CourseResponseDto.class);
     }
-
 
     @Transactional
     public CourseResponseDto withdrawFromCourse(Long studentId, Long courseID) {

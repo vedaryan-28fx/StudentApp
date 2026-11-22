@@ -4,11 +4,11 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import ved.StudentApp.Repository.BookRepository;
+import ved.StudentApp.repository.BookRepository;
 import ved.StudentApp.dto.book.BookRequestDto;
 import ved.StudentApp.dto.book.BookResponseDto;
 import ved.StudentApp.entity.Book;
-import ved.StudentApp.Repository.StudentRepository;
+import ved.StudentApp.repository.StudentRepository;
 import ved.StudentApp.entity.Student;
 import ved.StudentApp.exception.ResourceNotFoundException;
 

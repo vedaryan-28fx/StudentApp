@@ -4,7 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import ved.StudentApp.Repository.StudentRepository;
+import ved.StudentApp.repository.StudentRepository;
 import ved.StudentApp.dto.student.StudentDto;
 import ved.StudentApp.entity.Student;
 import ved.StudentApp.exception.ResourceNotFoundException;
