@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ved.StudentApp.Services.BookServices;
-import ved.StudentApp.Services.CourseServices;
-import ved.StudentApp.Services.StudentServices;
+import ved.StudentApp.services.BookServices;
+import ved.StudentApp.services.CourseServices;
+import ved.StudentApp.services.StudentServices;
 import ved.StudentApp.dto.book.BookResponseDto;
 import ved.StudentApp.dto.student.StudentDto;
 

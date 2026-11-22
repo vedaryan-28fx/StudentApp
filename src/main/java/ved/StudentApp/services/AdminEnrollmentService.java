@@ -1,4 +1,4 @@
-package ved.StudentApp.Services;
+package ved.StudentApp.services;
 
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;

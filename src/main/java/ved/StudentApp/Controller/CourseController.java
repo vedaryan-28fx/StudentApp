@@ -4,9 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ved.StudentApp.Services.CourseServices;
+import ved.StudentApp.services.CourseServices;
 import ved.StudentApp.dto.course.CourseDto;
-import ved.StudentApp.dto.course.CourseRequestDto;
 import ved.StudentApp.dto.course.CourseResponseDto;
 
 import java.util.List;

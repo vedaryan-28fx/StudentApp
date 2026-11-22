@@ -2,8 +2,8 @@ package ved.StudentApp.configuration;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,28 +16,20 @@ import ved.StudentApp.repository.StudentRepository;
 
 import java.util.List;
 
+@AllArgsConstructor
+@Slf4j
 @Component
 public class Populate implements CommandLineRunner {
 
-    private static final Logger log = LoggerFactory.getLogger(Populate.class);
+//    private static final Logger log = LoggerFactory.getLogger(Populate.class);
 
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
     private final BookRepository bookRepository;
 
-    public Populate(
-            StudentRepository studentRepository,
-            CourseRepository courseRepository,
-            BookRepository bookRepository
-    ) {
-        this.studentRepository = studentRepository;
-        this.courseRepository = courseRepository;
-        this.bookRepository = bookRepository;
-    }
-
     @PostConstruct
     public void init() {
-        log.info("Populate init (@PostConstruct)");
+        log.info("Populate bean initialized");
     }
 
     @Override
