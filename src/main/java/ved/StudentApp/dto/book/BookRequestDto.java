@@ -22,4 +22,5 @@ public class BookRequestDto {
     @NotBlank(message = "Author name is required")
     @Size(min = 1, max = 30)
     private String author;
+
 }
