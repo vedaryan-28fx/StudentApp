@@ -3,7 +3,7 @@ services:
     container_name: StudentApp_Container # This forces the exact name you see in Docker Desktop
     image: 'postgres:latest'
     environment:
-      - 'POSTGRES_USER=student'
+      - 'POSTGRES_USER=user'
       - 'POSTGRES_PASSWORD=pass'
       - 'POSTGRES_DB=projectdb'
     ports:

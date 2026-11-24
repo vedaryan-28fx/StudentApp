@@ -5,6 +5,7 @@ import jakarta.annotation.PreDestroy;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ved.StudentApp.entity.Book;
@@ -18,10 +19,12 @@ import java.util.List;
 
 @AllArgsConstructor
 @Slf4j
-@Component
-public class Populate implements CommandLineRunner {
 
-//    private static final Logger log = LoggerFactory.getLogger(Populate.class);
+@Profile("dev")
+@Component
+public class DevSeeder implements CommandLineRunner {
+
+//    private static final Logger log = LoggerFactory.getLogger(DevSeeder.class);
 
     private final StudentRepository studentRepository;
     private final CourseRepository courseRepository;
@@ -29,7 +32,7 @@ public class Populate implements CommandLineRunner {
 
     @PostConstruct
     public void init() {
-        log.info("Populate bean initialized");
+        log.info("DevSeeder bean initialized");
     }
 
     @Override
