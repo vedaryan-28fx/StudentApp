@@ -5,13 +5,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class BookResponseDto {
-    private Long id;
-    private String name;
-    private String author;
-    private Long studentId;
+//@Getter
+//@Setter
+//@NoArgsConstructor
+//@AllArgsConstructor
+//public class BookResponseDto {
+//    private Long id;
+//    private String name;
+//    private String author;
+//    private Long studentId;
+//}
+
+public record BookResponseDto(
+
+        Long id,
+        String name,
+        String author,
+        Long studentId
+) {
 }
