@@ -1,9 +1,9 @@
 package ved.StudentApp.services;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import ved.StudentApp.mapper.BookMapper;
 import ved.StudentApp.repository.BookRepository;
 import ved.StudentApp.dto.book.BookRequestDto;
 import ved.StudentApp.dto.book.BookResponseDto;
@@ -19,14 +19,14 @@ import java.util.List;
 public class BookServices {
 
     private final BookRepository bookRepository;
-    private final ModelMapper modelMapper;
+    private final BookMapper bookMapper;
     private final StudentRepository studentRepository;
 
     @Transactional
     public BookResponseDto addBook(BookRequestDto bookRequestDto) {
-        Book newbook = modelMapper.map(bookRequestDto, Book.class);
+        Book newbook = bookMapper.toEntity(bookRequestDto);
         Book savedBook = bookRepository.save(newbook);
-        return modelMapper.map(savedBook,BookResponseDto.class);
+        return bookMapper.toBookResponseDto(savedBook);
     }
 
     @Transactional
@@ -43,13 +43,12 @@ public class BookServices {
         student.removeBook(book);
     }
 
+    @Transactional(readOnly = true)
     public List<BookResponseDto> getBooksByStudentID(Long studentId) {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cannot find Student with id " + studentId));
 
-        return student.getBooks().stream()
-                .map(book -> modelMapper.map(book, BookResponseDto.class))
-                .toList();
+        return bookMapper.toBookResponseDto(student.getBooks());
     }
 
     @Transactional
@@ -60,10 +59,11 @@ public class BookServices {
                 .orElseThrow(() -> new ResourceNotFoundException("Cannot find Book with id " + bookId));
 
         student.addBook(book);
-        return modelMapper.map(book, BookResponseDto.class);
+        return bookMapper.toBookResponseDto(book);
 
     }
 
+    @Transactional
     public BookResponseDto unassignBookToStudent(Long bookId, Long studentId) {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cannot find Student with id " + studentId));
@@ -71,7 +71,7 @@ public class BookServices {
                 .orElseThrow(() -> new ResourceNotFoundException("Cannot find Book with id " + bookId));
 
         student.removeBook(book);
-        return modelMapper.map(book, BookResponseDto.class);
+        return bookMapper.toBookResponseDto(book);
 
     }
 }
