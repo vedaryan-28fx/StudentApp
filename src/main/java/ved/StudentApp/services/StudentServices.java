@@ -1,14 +1,17 @@
 package ved.StudentApp.services;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import ved.StudentApp.dto.student.StudentRequestDto;
+import ved.StudentApp.dto.student.StudentResponseDto;
+import ved.StudentApp.entity.Book;
+import ved.StudentApp.mapper.StudentMapper;
 import ved.StudentApp.repository.StudentRepository;
-import ved.StudentApp.dto.student.StudentDto;
 import ved.StudentApp.entity.Student;
 import ved.StudentApp.exception.ResourceNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -16,38 +19,45 @@ import java.util.List;
 public class StudentServices {
 
     private final StudentRepository studentRepository;
-    private final ModelMapper modelMapper;
+    private final StudentMapper studentMapper;
 
-    public StudentDto getStudentById(Long id) {
+    @Transactional(readOnly = true)
+    public StudentResponseDto getStudentById(Long id) {
         Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + id));
-        return modelMapper.map(student, StudentDto.class);
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + id));
+        return studentMapper.toStudentResponseDto(student);
     }
 
-    public List<StudentDto> getAllStudents() {
+    @Transactional(readOnly = true)
+    public List<StudentResponseDto> getAllStudents() {
         List<Student> studentList = studentRepository.findAll();
-        return studentList.stream()
-                .map(student -> modelMapper.map(student , StudentDto.class))
-                .toList();
+        return studentMapper.toStudentResponseDtos(studentList);
     }
     @Transactional
-    public StudentDto createStudent(StudentDto studentDto) {
-        Student newStudent = modelMapper.map(studentDto, Student.class);
-        studentRepository.save(newStudent);
-        return modelMapper.map(newStudent, StudentDto.class);
+    public StudentResponseDto createStudent(StudentRequestDto studentDto) {
+        Student newStudent = studentMapper.toEntity(studentDto);
+        Student savedStudent = studentRepository.save(newStudent);
+        return studentMapper.toStudentResponseDto(newStudent);
 
     }
     @Transactional
-    public StudentDto updateStudent(Long id, StudentDto studentDto) {
+    public StudentResponseDto updateStudent(Long id, StudentRequestDto studentDto) {
         Student student = studentRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Book not found with id: " + id));
-        modelMapper.map(studentDto, student);
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + id));
+        studentMapper.updateEntityFromRequest(studentDto, student);
 //        studentRepository.save(student);    cause of Transactional
-        return modelMapper.map(student, StudentDto.class);
+        return studentMapper.toStudentResponseDto(student);
 
     }
 
+    @Transactional
     public void deleteStudent(Long id) {
-        studentRepository.deleteById(id);
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with id: " + id));
+        // unlink books from student
+        for (Book book : new ArrayList<>(student.getBooks())) {
+            student.removeBook(book);
+        }
+        studentRepository.delete(student);
     }
 }
