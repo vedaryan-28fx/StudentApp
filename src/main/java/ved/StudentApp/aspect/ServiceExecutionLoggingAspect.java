@@ -52,7 +52,6 @@ public class ServiceExecutionLoggingAspect {
                     methodSignature, status, String.format("%.2f", elapsedMs));
         }
     }
-
     @AfterThrowing(pointcut = "monitoredMethods()", throwing = "ex")
     public void logException(JoinPoint joinPoint, Throwable ex) {
         String methodSignature = joinPoint.getSignature().toShortString();
