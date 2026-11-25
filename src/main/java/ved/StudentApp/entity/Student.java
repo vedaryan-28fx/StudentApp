@@ -26,7 +26,7 @@ public class Student {
 
     private String email;
 
-    private int age;
+    private Integer age;
 
     @OneToMany(mappedBy = "student", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
     private Set<Book> books = new HashSet<>();

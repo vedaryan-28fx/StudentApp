@@ -1,12 +1,12 @@
 package ved.StudentApp.services;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import ved.StudentApp.dto.course.CourseRequestDto;
+import ved.StudentApp.mapper.CourseMapper;
 import ved.StudentApp.repository.CourseRepository;
 import ved.StudentApp.repository.StudentRepository;
-import ved.StudentApp.dto.course.CourseDto;
 import ved.StudentApp.dto.course.CourseResponseDto;
 import ved.StudentApp.entity.Course;
 import ved.StudentApp.entity.Student;
@@ -22,43 +22,44 @@ public class CourseServices {
 
     private final CourseRepository courseRepository;
     private final StudentRepository studentRepository;
-    private final ModelMapper modelMapper;
+    private final CourseMapper  courseMapper;
     private final EnrollmentNotificationPolicy notificationPolicy;
     private final AdminEnrollmentService adminEnrollmentService;
 
-
-
-    public CourseDto getCourseById(Long id) {
+    @Transactional(readOnly = true)
+    public CourseResponseDto getCourseById(Long id) {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + id));
-        return modelMapper.map(course, CourseDto.class);
+        return courseMapper.toCourseResponseDto(course);
     }
 
-    public List<CourseDto> getAllCourses() {
+    @Transactional(readOnly = true)
+    public List<CourseResponseDto> getAllCourses() {
         List<Course> courseList = courseRepository.findAll();
-        List<CourseDto> courseDtoList = new ArrayList<>();
+        List<CourseResponseDto> courseDtoList = new ArrayList<>();
         for (int i = 0; i < courseList.toArray().length; i++) {
-            courseDtoList.add(modelMapper.map(courseList.get(i), CourseDto.class));
+            courseDtoList.add(courseMapper.toCourseResponseDto(courseList.get(i)));
         }
         return courseDtoList;
     }
     @Transactional
-    public CourseDto createCourse(CourseDto courseDto) {
-        Course newCourse = modelMapper.map(courseDto, Course.class);
+    public CourseResponseDto createCourse(CourseRequestDto requestDto) {
+        Course newCourse = courseMapper.toEntity(requestDto);
         courseRepository.save(newCourse);
-        return modelMapper.map(newCourse, CourseDto.class);
+        return courseMapper.toCourseResponseDto(newCourse);
 
     }
     @Transactional
-    public CourseDto updateCourse(Long id, CourseDto courseDto) {
+    public CourseResponseDto updateCourse(Long id, CourseRequestDto requestDto) {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + id));
-        modelMapper.map(courseDto, course);
+        courseMapper.updateEntityFromRequest(requestDto, course);
 //        courseRepository.save(Course);    cause of Transactional
-        return modelMapper.map(course, CourseDto.class);
+        return courseMapper.toCourseResponseDto(course);
 
     }
 
+    @Transactional
     public void deleteCourse(Long id) {
         courseRepository.deleteById(id);
     }
@@ -75,7 +76,7 @@ public class CourseServices {
         notificationPolicy.notifyEnrollment(
                 student.getId(), student.getName(), student.getEmail(), course.getName()
         );
-        return modelMapper.map(course, CourseResponseDto.class);
+        return courseMapper.toCourseResponseDto(course);
     }
 
     @Transactional
@@ -86,6 +87,6 @@ public class CourseServices {
                 .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + courseID));
 
         student.dropCourse(course);
-        return modelMapper.map(course, CourseResponseDto.class);
+        return courseMapper.toCourseResponseDto(course);
     }
 }
