@@ -30,17 +30,14 @@ public class BookServices {
     }
 
     @Transactional
-    public void removeBook(Long bookId, Long studentId) {
-        Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new ResourceNotFoundException("Cannot find Student with id " + studentId));
+    public void deleteBook(Long bookId) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cannot find Book with id " + bookId));
 
-        if (book.getStudent() == null || !book.getStudent().getId().equals(student.getId())) {
-            throw new ResourceNotFoundException("Book " + bookId + " does not belong to Student " + studentId);
+        if (book.getStudent() != null) {
+            book.getStudent().removeBook(book);
         }
-
-        student.removeBook(book);
+        bookRepository.delete(book);
     }
 
     @Transactional(readOnly = true)

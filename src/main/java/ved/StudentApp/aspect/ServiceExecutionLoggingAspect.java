@@ -19,7 +19,7 @@ import java.util.Arrays;
 @Order(1)
 public class ServiceExecutionLoggingAspect {
 
-    @Pointcut("execution(public * ved.StudentApp.services.*.*(..))")
+    @Pointcut("execution(public * ved.StudentApp.services..*.*(..))")
     public void serviceLayerMethods() {
     }
 
@@ -52,7 +52,6 @@ public class ServiceExecutionLoggingAspect {
                     methodSignature, status, String.format("%.2f", elapsedMs));
         }
     }
-
     @AfterThrowing(pointcut = "monitoredMethods()", throwing = "ex")
     public void logException(JoinPoint joinPoint, Throwable ex) {
         String methodSignature = joinPoint.getSignature().toShortString();
