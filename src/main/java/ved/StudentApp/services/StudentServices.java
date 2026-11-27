@@ -37,7 +37,7 @@ public class StudentServices {
     public StudentResponseDto createStudent(StudentRequestDto studentDto) {
         Student newStudent = studentMapper.toEntity(studentDto);
         Student savedStudent = studentRepository.save(newStudent);
-        return studentMapper.toStudentResponseDto(newStudent);
+        return studentMapper.toStudentResponseDto(savedStudent);
 
     }
     @Transactional

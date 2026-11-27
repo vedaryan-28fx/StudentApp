@@ -19,7 +19,7 @@ import java.util.Arrays;
 @Order(1)
 public class ServiceExecutionLoggingAspect {
 
-    @Pointcut("execution(public * ved.StudentApp.services.*.*(..))")
+    @Pointcut("execution(public * ved.StudentApp.services..*.*(..))")
     public void serviceLayerMethods() {
     }
 
